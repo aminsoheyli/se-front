@@ -18,65 +18,49 @@ import ir.ac.shirazu.softwareproject.recycler_view.weekly.WeeklyAdapter;
 import ir.ac.shirazu.softwareproject.recycler_view.weekly.WeeklyItem;
 import ir.ac.shirazu.softwareproject.server_api.Meal.Date;
 import ir.ac.shirazu.softwareproject.server_api.Meal.MealInfo;
+import ir.ac.shirazu.softwareproject.server_api.Meal.MealName;
 import ir.ac.shirazu.softwareproject.server_api.Meal.MyKit;
 
 
 public class WeeklyFragment extends Fragment {
     private static final String ITMES_KEY = "WEEKLY ITEMS";
     private Button nextWeekBtn, previousWeekBtn;
+
     private List<WeeklyItem> items;
+    List<MealInfo> reservedMeals = MyKit.student.allStudentFoodInfo;
+    List<MealInfo> availableMeals = MealInfo.allAvailableMealInfo;
+
 
     public WeeklyFragment() {
-        List<MealInfo> availableMeals = MealInfo.allAvailableMealInfo;
-        List<MealInfo> reservedMeals = MyKit.student.allStudentFoodInfo;
-
-        Date today = Date.getToday();
-        Date firstDayOfWeek = Date.getFirstDayOfThisWeek();
-
         items = new ArrayList<>();
 
-        for (int i = 0; i < 7; i++)
-            items.add(null);
+//        Date firstDayOfWeek = Date.getFirstDayOfThisWeek();
 
-        // Fill all weekly items with either available or reserved meals
-        fillItems(availableMeals, items, today);
-        fillItems(reservedMeals, items, firstDayOfWeek);
     }
 
-    private void fillItems(List<MealInfo> meals, List<WeeklyItem> itemsToFill, Date date) {
+    private void fillItems(List<MealInfo> meals) {
+        Date date = Date.getToday();
         for (int i = 0; i < 7; i++) {
-            if (i != 0)
-                date.setToNextDay();
+            date.
 
-            WeeklyItem thisDayWeeklyItem = new WeeklyItem(null, null, null);
-            MealInfo breakfast, lunch, dinner;
-            for (MealInfo meal : meals) {
-                Date thisMealDate = meal.getDate();
-
-                if (thisMealDate.getDay() == date.getDay()) {
-                    switch (meal.getMealName()) {
-                        case BREAKFAST:
-
-                            break;
-                        case LUNCH:
-                            thisDayWeeklyItem.setLunchInfo(meal);
-                            break;
-                        case DINNER:
-                            thisDayWeeklyItem.setDinnerInfo(meal);
-                            break;
-                    }
-                }
-            }
-            itemsToFill.set(i,thisDayWeeklyItem);
         }
+
+    }
+
+    private MealInfo isExistInReserved(Date date, MealName mealName) {
+        for (MealInfo reservedMeal : reservedMeals) {
+            if (reservedMeal.getDate().equals(date) && reservedMeal.getMealName() == mealName)
+                return reservedMeal;
+        }
+        return null;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        // Fill all weekly items with either available or reserved meals
+        fillItems(availableMeals, today);
 
-        }
     }
 
     @Override
