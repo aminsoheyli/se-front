@@ -33,7 +33,7 @@ public class WeeklyFragment extends Fragment {
         Date today = Date.getToday();
         Date firstDayOfWeek = Date.getFirstDayOfThisWeek();
 
-        List<WeeklyItem> items = new ArrayList<>();
+        items = new ArrayList<>();
 
         for (int i = 0; i < 7; i++)
             items.add(null);
@@ -41,8 +41,6 @@ public class WeeklyFragment extends Fragment {
         // Fill all weekly items with either available or reserved meals
         fillItems(availableMeals, items, today);
         fillItems(reservedMeals, items, firstDayOfWeek);
-
-        this.items = items;
     }
 
     private void fillItems(List<MealInfo> meals, List<WeeklyItem> itemsToFill, Date date) {
@@ -51,14 +49,14 @@ public class WeeklyFragment extends Fragment {
                 date.setToNextDay();
 
             WeeklyItem thisDayWeeklyItem = new WeeklyItem(null, null, null);
+            MealInfo breakfast, lunch, dinner;
             for (MealInfo meal : meals) {
                 Date thisMealDate = meal.getDate();
 
-                if (thisMealDate.getDay() == date.getDay()
-                        && thisMealDate.getMonth() == date.getMonth()) {
+                if (thisMealDate.getDay() == date.getDay()) {
                     switch (meal.getMealName()) {
                         case BREAKFAST:
-                            thisDayWeeklyItem.setBreakfastInfo(meal);
+
                             break;
                         case LUNCH:
                             thisDayWeeklyItem.setLunchInfo(meal);

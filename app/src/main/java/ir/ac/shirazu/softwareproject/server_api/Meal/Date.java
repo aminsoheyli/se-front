@@ -135,7 +135,7 @@ public class Date {
         date.setShDay(firstDayOfWeek.getDay());
         date.setShMonth(firstDayOfWeek.getMonth());
         date.setShYear(firstDayOfWeek.getYear());
-        date.addDate(0, 0, -date.dayOfWeek());
+        date.addDate(0, 0, -date.dayOfWeek()+1);
         firstDayOfWeek.setDay(date.getShDay());
         return firstDayOfWeek;
     }
