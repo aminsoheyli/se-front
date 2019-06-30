@@ -26,28 +26,19 @@ public class WeeklyFragment extends Fragment {
     private static final String ITMES_KEY = "WEEKLY ITEMS";
     private Button nextWeekBtn, previousWeekBtn;
 
-    private List<WeeklyItem> items;
-    List<MealInfo> reservedMeals = MyKit.student.allStudentFoodInfo;
-    List<MealInfo> availableMeals = MealInfo.allAvailableMealInfo;
+    private ArrayList<WeeklyItem> items;
+    ArrayList<MealInfo> reservedMeals = MyKit.student.allStudentFoodInfo;
+    ArrayList<MealInfo> availableMeals = MealInfo.allAvailableMealInfo;
 
 
     public WeeklyFragment() {
-        items = new ArrayList<>();
+        items = new ArrayList<>(7);
 
 //        Date firstDayOfWeek = Date.getFirstDayOfThisWeek();
 
     }
 
-    private void fillItems(List<MealInfo> meals) {
-        Date date = Date.getToday();
-        for (int i = 0; i < 7; i++) {
-            date.
-
-        }
-
-    }
-
-    private MealInfo isExistInReserved(Date date, MealName mealName) {
+    private MealInfo isExistInReserved(Date date, MealName mealName, List<MealInfo> reservedMeals) {
         for (MealInfo reservedMeal : reservedMeals) {
             if (reservedMeal.getDate().equals(date) && reservedMeal.getMealName() == mealName)
                 return reservedMeal;
@@ -59,9 +50,32 @@ public class WeeklyFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Fill all weekly items with either available or reserved meals
-        fillItems(availableMeals, today);
+        fillItems();
 
     }
+
+
+    private void fillItems() {
+        Date date = Date.getToday().increaseDayBy(1);
+        for (int i = 0; i < 7; i++) {
+            Date day = date.increaseDayBy(i);
+            MealInfo breakfast = isExistInReserved(day, MealName.BREAKFAST, reservedMeals);
+            MealInfo lunch = isExistInReserved(day, MealName.LUNCH, reservedMeals);
+            MealInfo dinner = isExistInReserved(day, MealName.DINNER, reservedMeals);
+            if (breakfast == null) {
+                breakfast = isExistInReserved(day, MealName.DINNER, availableMeals);
+            }
+            if (lunch == null) {
+                lunch = isExistInReserved(day, MealName.DINNER, availableMeals);
+            }
+            if (dinner == null) {
+                dinner = isExistInReserved(day, MealName.DINNER, availableMeals);
+            }
+            items.add(new WeeklyItem(breakfast, lunch, dinner));
+        }
+
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
